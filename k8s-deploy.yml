@@ -18,7 +18,7 @@ spec:
   spec: 
     containers:
     - name: mavenwebappcontainer
-      image: freebook/mavenwebapp
+      image: abhijeetdxc/mavenwebapp:latest
       imagePullPolicy: Always
       ports:
       - containerPort: 8080
