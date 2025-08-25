@@ -2,36 +2,39 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
- name: mavenwebappdeployment
+  name: mavenwebappdeployment
+  labels:
+    app: mavenwebapp
 spec:
- replicas: 2
- strategy: 
-    type: Recreate
- selector: 
-   matchLabels: 
-     app: mavenwebapp
- template:
-  metadata:
-   name: mavenwebapppod
-   labels:
-     app: mavenwebapp	 
-  spec: 
-    containers:
-    - name: mavenwebappcontainer
-      image: abhijeetdxc/mavenwebapp:latest
-      imagePullPolicy: Always
-      ports:
-      - containerPort: 8080
+  replicas: 2
+  strategy:
+    type: Recreate   # ensures old pods are stopped before new ones start
+  selector:
+    matchLabels:
+      app: mavenwebapp
+  template:
+    metadata:
+      labels:
+        app: mavenwebapp
+    spec:
+      containers:
+      - name: mavenwebappcontainer
+        image: abhijeetdxc/mavenwebapp:latest   # Jenkins will override with a tag
+        imagePullPolicy: Always                 # always pull latest from DockerHub
+        ports:
+        - containerPort: 8080
 ---
 apiVersion: v1
 kind: Service
 metadata:
- name: mavenwebappsvc
+  name: mavenwebappsvc
+  labels:
+    app: mavenwebapp
 spec:
   type: LoadBalancer
   selector:
-   app: mavenwebapp
+    app: mavenwebapp
   ports:
-   - port: 80
-     targetPort: 8080
-...
+  - protocol: TCP
+    port: 80
+    targetPort: 8080
